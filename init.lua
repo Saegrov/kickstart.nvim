@@ -230,6 +230,22 @@ vim.api.nvim_create_autocmd('TextYankPost', {
   callback = function() vim.hl.on_yank() end,
 })
 
+-- Add "organize imports" key binding
+vim.keymap.set(
+  'n',
+  '<leader>fo',
+  function()
+    vim.lsp.buf.code_action {
+      apply = true,
+      context = {
+        only = { 'source.organizeImports' },
+        diagnostics = {},
+      },
+    }
+  end,
+  { desc = '[O]ptimise imports' }
+)
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -317,6 +333,7 @@ require('lazy').setup({
       -- Document existing key chains
       spec = {
         { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
+        { '<leader>f', group = '[F]ix code in various ways', mode = { 'n', 'v' } },
         { '<leader>l', group = '[L]azygit', mode = { 'n', 'v' } },
         { '<leader>t', group = '[T]oggle' },
         { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
@@ -723,7 +740,7 @@ require('lazy').setup({
     cmd = { 'ConformInfo' },
     keys = {
       {
-        '<leader>f',
+        '<leader>ff',
         function() require('conform').format { async = true, lsp_format = 'fallback' } end,
         mode = '',
         desc = '[F]ormat buffer',
