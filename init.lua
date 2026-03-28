@@ -612,8 +612,58 @@ require('lazy').setup({
         -- But for many setups, the LSP (`ts_ls`) will work just fine
         -- ts_ls = {},
         tsgo = {},
-        oxlint = {},
-        eslint = {},
+        oxlint = {
+
+          on_attach = function(client, bufnr)
+            vim.api.nvim_buf_create_user_command(
+              bufnr,
+              'LspOxlintFixAll',
+              function()
+                client:exec_cmd {
+                  title = 'Apply Oxlint automatic fixes',
+                  command = 'oxc.fixAll',
+                  arguments = { { uri = vim.uri_from_bufnr(bufnr) } },
+                }
+              end,
+              {
+                desc = 'Apply Oxlint automatic fixes',
+              }
+            )
+
+            -- automatically fix linting errors on save
+            vim.api.nvim_create_autocmd('BufWritePre', {
+              buffer = bufnr,
+              command = 'LspOxlintFixAll', -- This command is provided by the eslint-lsp server
+            })
+          end,
+        },
+
+        eslint = {
+
+          on_attach = function(client, bufnr)
+            vim.api.nvim_buf_create_user_command(
+              bufnr,
+              'LspEslintFixAll',
+              function()
+                client:request_sync('workspace/executeCommand', {
+                  command = 'eslint.applyAllFixes',
+                  arguments = {
+                    {
+                      uri = vim.uri_from_bufnr(bufnr),
+                      version = vim.lsp.util.buf_versions[bufnr],
+                    },
+                  },
+                }, nil, bufnr)
+              end,
+              {}
+            )
+            -- automatically fix linting errors on save
+            vim.api.nvim_create_autocmd('BufWritePre', {
+              buffer = bufnr,
+              command = 'LspEslintFixAll', -- This command is provided by the eslint-lsp server
+            })
+          end,
+        },
         stylua = {}, -- Used to format Lua code
 
         -- Special Lua Config, as recommended by neovim help docs
