@@ -883,18 +883,18 @@ require('lazy').setup({
     -- change the command in the config to whatever the name of that colorscheme is.
     --
     -- if you want to see what colorschemes are already installed, you can use `:telescope colorscheme`.
-    'nickkadutskyi/jb.nvim',
+    'catppuccin/nvim',
     priority = 1000, -- Make sure to load this before all the other start plugins.
     config = function()
       ---@diagnostic disable-next-line: missing-fields
-      require('jb').setup {
+      require('catppuccin').setup {
         -- styles = {
         --   comments = { italic = false }, -- Disable italics in comments
         -- },
       }
 
       -- Load the colorscheme here.
-      vim.cmd.colorscheme 'jb'
+      vim.cmd.colorscheme 'catppuccin-nvim'
     end,
   },
 
