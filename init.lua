@@ -84,6 +84,10 @@ I hope you enjoy your Neovim journey,
 P.S. You can delete this when you're done too. It's your config now! :)
 --]]
 
+-- Disable netrw in favour of nvim-filetree
+vim.g.loaded_netrw = 1
+vim.g.loaded_netrwPlugin = 1
+
 -- Set <space> as the leader key
 -- See `:help mapleader`
 --  NOTE: Must happen before plugins are loaded (otherwise wrong leader will be used)
@@ -211,6 +215,18 @@ vim.keymap.set('n', '<C-h>', '<C-w><C-h>', { desc = 'Move focus to the left wind
 vim.keymap.set('n', '<C-l>', '<C-w><C-l>', { desc = 'Move focus to the right window' })
 vim.keymap.set('n', '<C-j>', '<C-w><C-j>', { desc = 'Move focus to the lower window' })
 vim.keymap.set('n', '<C-k>', '<C-w><C-k>', { desc = 'Move focus to the upper window' })
+
+vim.keymap.set(
+  { 'n', 'v' },
+  '<leader>tt',
+  function()
+    require('nvim-tree.api').tree.toggle {
+      find_file = true,
+      focus = true,
+    }
+  end,
+  { desc = 'Toggle file[T]ree' }
+)
 
 -- NOTE: Some terminals have colliding keymaps or are not able to send distinct keycodes
 -- vim.keymap.set("n", "<C-S-h>", "<C-w>H", { desc = "Move window to the left" })
@@ -632,6 +648,8 @@ require('lazy').setup({
         tsgo = {},
         oxlint = {
 
+          on_init = function() end,
+
           on_attach = function(client, bufnr)
             vim.api.nvim_buf_create_user_command(
               bufnr,
@@ -994,6 +1012,12 @@ require('lazy').setup({
       { '<c-l>', '<cmd><C-U>TmuxNavigateRight<cr>' },
       { '<c-\\>', '<cmd><C-U>TmuxNavigatePrevious<cr>' },
     },
+  },
+  {
+    'nvim-tree/nvim-tree.lua',
+    version = '*',
+    lazy = false,
+    config = function() require('nvim-tree').setup {} end,
   },
 
   {
