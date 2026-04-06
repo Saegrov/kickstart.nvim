@@ -176,6 +176,14 @@ vim.keymap.set(
   { desc = '[O]ptimise imports' }
 )
 
+-- Add starlark support for aspect extension language (AXL)
+vim.filetype.add {
+  extension = {
+    axl = 'starlark',
+  },
+}
+vim.treesitter.language.register('starlark', { 'bzl', 'bazel', 'axl' })
+
 -- [[ Install `lazy.nvim` plugin manager ]]
 --    See `:help lazy.nvim.txt` or https://github.com/folke/lazy.nvim for more info
 local lazypath = vim.fn.stdpath 'data' .. '/lazy/lazy.nvim'
@@ -880,10 +888,29 @@ require('lazy').setup({
     'nvim-treesitter/nvim-treesitter',
     lazy = false,
     build = ':TSUpdate',
+    commit = '90cd6580e720caedacb91fdd587b747a6e77d61f',
     branch = 'main',
     -- [[ Configure Treesitter ]] See `:help nvim-treesitter-intro`
     config = function()
-      local parsers = { 'bash', 'c', 'diff', 'html', 'lua', 'luadoc', 'markdown', 'markdown_inline', 'query', 'vim', 'vimdoc' }
+      local parsers = {
+        'bash',
+        'c',
+        'css',
+        'diff',
+        'html',
+        'javascript',
+        'jsdoc',
+        'lua',
+        'luadoc',
+        'markdown_inline',
+        'markdown',
+        'query',
+        'scss',
+        'starlark',
+        'typescript',
+        'vim',
+        'vimdoc',
+      }
       require('nvim-treesitter').install(parsers)
       vim.api.nvim_create_autocmd('FileType', {
         callback = function(args)
