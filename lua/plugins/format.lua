@@ -32,6 +32,9 @@ return {
       end
     end,
     formatters_by_ft = {
+      starlark = { 'buildifier' },
+      bzl = { 'buildifier' },
+      axl = { 'buildifier' },
       lua = { 'stylua' },
       javascript = { 'prettierd', 'prettier', stop_after_first = true },
       typescript = { 'prettierd', 'prettier', stop_after_first = true },
