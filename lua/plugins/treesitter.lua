@@ -23,6 +23,7 @@ return { -- Highlight, edit, and navigate code
       'query',
       'scss',
       'starlark',
+      'tsx',
       'typescript',
       'vim',
       'vimdoc',
