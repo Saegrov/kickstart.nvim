@@ -17,7 +17,7 @@ return {
     -- Maps LSP server names between nvim-lspconfig and Mason package names.
     'mason-org/mason-lspconfig.nvim',
     'WhoIsSethDaniel/mason-tool-installer.nvim',
-
+    'saecki/live-rename.nvim',
     -- Useful status updates for LSP.
     { 'j-hui/fidget.nvim', opts = {} },
   },
@@ -66,7 +66,7 @@ return {
 
         -- Rename the variable under your cursor.
         --  Most Language Servers support renaming across files, etc.
-        map('grn', vim.lsp.buf.rename, '[R]e[n]ame')
+        map('grn', require('live-rename').rename, '[R]e[n]ame')
 
         -- Execute a code action, usually your cursor needs to be on top of an error
         -- or a suggestion from your LSP for this to activate.
