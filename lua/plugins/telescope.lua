@@ -71,16 +71,132 @@ return { -- Fuzzy Finder (files, lsp, etc)
     -- Enable Telescope extensions if they are installed
     pcall(require('telescope').load_extension, 'fzf')
     pcall(require('telescope').load_extension, 'ui-select')
+    local builtin = require 'telescope.builtin'
+    local make_entry = require 'telescope.make_entry'
+    local entry_display = require 'telescope.pickers.entry_display'
+    local devicons = require 'nvim-web-devicons'
+    local Path = require 'plenary.path'
+    local pickers = require 'telescope.pickers'
+    local finders = require 'telescope.finders'
+    local conf = require('telescope.config').values
+    local live_multigrep = function(opts)
+      opts = opts or {}
+      opts.cwd = opts.cwd or vim.uv.cwd()
 
+      local finder = finders.new_async_job {
+        command_generator = function(prompt)
+          if not prompt or prompt == '' then return nil end
+
+          local pieces = vim.split(prompt, '  ')
+          local args = { 'rg' }
+          if #pieces == 1 then
+            table.insert(args, '-e')
+            table.insert(args, pieces[1])
+          end
+
+          if #pieces == 2 then
+            table.insert(args, '-e')
+            table.insert(args, pieces[2])
+            table.insert(args, '-t')
+            table.insert(args, pieces[1])
+          end
+          ---
+          ---@diagnostic disable-next-line: deprecated
+          return vim.tbl_flatten {
+            args,
+            { '--color=never', '--no-heading', '--with-filename', '--line-number', '--column', '--smart-case' },
+          }
+        end,
+        -- This entry maker list the grep result in the entries as well as the preview pane
+        -- entry_maker = make_entry.gen_from_vimgrep(opts),
+
+        entry_maker = function(entry)
+          local item = make_entry.gen_from_vimgrep {}(entry)
+
+          if not item or not item.filename or not item.lnum then return item end
+
+          local relative_filename = Path:new(item.filename):make_relative(vim.loop.cwd())
+          local file_line = string.format('%s:%d', relative_filename, item.lnum)
+
+          local icon, iconhl = devicons.get_icon(relative_filename, nil, { default = true })
+
+          local displayer = entry_display.create {
+            separator = ' ',
+            items = {
+              { width = 2 }, -- icon
+              -- { width = 50 }, -- file:line
+              { remaining = true }, -- (blank — no snippet)
+              { width = 5 },
+            },
+          }
+
+          item.display = function()
+            return displayer {
+              { icon, iconhl },
+              file_line,
+              '', -- no match text
+            }
+          end
+
+          item.ordinal = file_line
+          item.value = entry
+
+          return item
+        end,
+        cwd = opts.cwd,
+      }
+
+      pickers
+        .new(opts, {
+          debounce = 100,
+          prompt_title = 'Multi Grep',
+          finder = finder,
+          previewer = conf.grep_previewer(opts),
+          sorter = require('telescope.sorters').empty(),
+          entry_maker = function(entry)
+            local item = make_entry.gen_from_vimgrep {}(entry)
+
+            if not item or not item.filename or not item.lnum then return item end
+
+            local relative_filename = Path:new(item.filename):make_relative(vim.loop.cwd())
+            local file_line = string.format('%s:%d', relative_filename, item.lnum)
+
+            local icon, iconhl = devicons.get_icon(relative_filename, nil, { default = true })
+
+            local displayer = entry_display.create {
+              separator = ' ',
+              items = {
+                { width = 2 }, -- icon
+                { width = 50 }, -- file:line
+                { remaining = true }, -- (blank — no snippet)
+              },
+            }
+
+            item.display = function()
+              return displayer {
+                { icon, iconhl },
+                file_line,
+                '', -- no match text
+              }
+            end
+
+            item.ordinal = file_line
+            item.value = entry
+
+            return item
+          end,
+        })
+        :find()
+    end
     -- See `:help telescope.builtin`
     local builtin = require 'telescope.builtin'
     vim.keymap.set('n', '<leader>se', builtin.git_status, { desc = '[S]earch [E]dited files' })
     vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
     vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-    vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+    vim.keymap.set('n', '<leader>sf', function() builtin.find_files { path_display = { 'smart' } } end, { desc = '[S]earch [F]iles' })
     vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
     vim.keymap.set({ 'n', 'v' }, '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
-    vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+    vim.keymap.set('n', '<leader>sg', function() live_multigrep { path_display = { 'shorten' } } end, { desc = '[S]earch by [G]rep' })
     vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
     vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
     vim.keymap.set('n', '<leader>s.', function() builtin.oldfiles { only_cwd = true } end, { desc = '[S]earch Recent Files ("." for repeat)' })

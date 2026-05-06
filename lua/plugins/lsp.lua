@@ -130,6 +130,20 @@ return {
       --
       -- But for many setups, the LSP (`ts_ls`) will work just fine
       -- ts_ls = {},
+      somesass_ls = {
+        root_markers = { 'package.json' },
+      },
+      -- This is temporary disabled because it will suggest variables names wherever you are and is very noisy
+      -- css_variables = {
+      --   root_markers = { 'package.json' },
+      --   -- root_dir = vim.fn.getcwd(),
+      --
+      --   settings = {
+      --     cssVariables = {
+      --       lookupFiles = { '**/*.less', '**/*.scss', '**/*.sass', '**/*.css', 'node_modules/@fremtind/jokul/stylessrc/base.css' },
+      --     },
+      --   },
+      -- },
       tsgo = {},
       oxlint = {
 
