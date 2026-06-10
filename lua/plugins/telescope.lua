@@ -191,9 +191,10 @@ return { -- Fuzzy Finder (files, lsp, etc)
     -- See `:help telescope.builtin`
     local builtin = require 'telescope.builtin'
     vim.keymap.set('n', '<leader>se', builtin.git_status, { desc = '[S]earch [E]dited files' })
+    vim.keymap.set('n', '<leader>sb', builtin.git_bcommits, { desc = '[S]earch [B]uffer git history' })
     vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
     vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
-    vim.keymap.set('n', '<leader>sf', function() builtin.find_files { path_display = { 'smart' } } end, { desc = '[S]earch [F]iles' })
+    vim.keymap.set('n', '<leader>sf', function() builtin.find_files { path_display = { truncate = 5 } } end, { desc = '[S]earch [F]iles' })
     vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
     vim.keymap.set({ 'n', 'v' }, '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
     vim.keymap.set('n', '<leader>sg', function() live_multigrep { path_display = { 'shorten' } } end, { desc = '[S]earch by [G]rep' })

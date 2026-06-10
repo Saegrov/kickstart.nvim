@@ -30,7 +30,8 @@ return { -- Useful plugin to show you pending keybinds.
       { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
       { '<leader>f', group = '[F]ix code in various ways', mode = { 'n', 'v' } },
       { '<leader>l', group = '[L]azygit', mode = { 'n', 'v' } },
-      { '<leader>t', group = '[T]oggle', mode = { 'n', 'v' } },
+      { '<leader>e', group = 'File [E]xplorer', mode = { 'n', 'v' } },
+      { '<leader>g', group = 'To[g]gle', mode = { 'n', 'v' } },
       { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
       { 'gr', group = 'LSP Actions', mode = { 'n' } },
     },
