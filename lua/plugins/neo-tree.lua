@@ -16,6 +16,7 @@ return {
   config = function()
     vim.keymap.set({ 'n', 'v' }, '<leader>et', '<Cmd>Neotree filesystem reveal left<CR>', { desc = 'Filesystem [T]ree' })
     vim.keymap.set({ 'n', 'v' }, '<leader>ee', '<Cmd>Neotree buffers reveal left<CR>', { desc = 'R[e]cent buffers tree' })
+    vim.keymap.set({ 'n', 'v' }, '<leader>el', '<Cmd>Neotree close<CR>', { desc = 'Filesystem Tree c[L]ose' })
   end,
   lazy = false,
   keys = {
