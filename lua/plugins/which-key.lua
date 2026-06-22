@@ -33,6 +33,7 @@ return { -- Useful plugin to show you pending keybinds.
       { '<leader>e', group = 'File [E]xplorer', mode = { 'n', 'v' } },
       { '<leader>g', group = 'To[g]gle', mode = { 'n', 'v' } },
       { '<leader>h', group = 'Git [H]unk', mode = { 'n', 'v' } }, -- Enable gitsigns recommended keymaps first
+      { '<leader>b', group = '[B]uffer', mode = { 'n', 'v' } },
       { 'gr', group = 'LSP Actions', mode = { 'n' } },
     },
   },
